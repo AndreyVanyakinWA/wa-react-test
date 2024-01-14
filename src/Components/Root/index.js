@@ -21,9 +21,16 @@ function Root() {
       id: nanoid(),
     },
   ])
+  const [page, setPage] = useState(1)
 
+  const LIMIT = 10
   const [value, setValue] = useState('')
-  const { data, loading } = useQuery(postsQuery)
+  const { data, loading } = useQuery(postsQuery, {
+    variables: {
+      page,
+      limit: LIMIT,
+    },
+  })
 
   function handlePush() {
     setFields([{ name: faker.name.findName(), id: nanoid() }, ...fields])
@@ -35,12 +42,24 @@ function Root() {
     }, 2500)
   }
 
+  function nextPage() {
+    if (page * LIMIT < data?.posts.meta.totalCount) {
+      setPage(page + 1)
+    }
+  }
+
+  function prevPage() {
+    if (page > 1) {
+      setPage(page - 1)
+    }
+  }
+
   const posts = data?.posts.data || []
 
   return (
     <Container>
       <Column>
-        <h4>Need to add pagination</h4>
+        <h4>Post list</h4>
         {loading
           ? 'Loading...'
           : posts.map(post => (
@@ -52,7 +71,14 @@ function Root() {
                 <PostBody>{post.body}</PostBody>
               </Post>
             ))}
-        <div>Pagination here</div>
+        <div>
+          <button type="button" onClick={prevPage}>
+            prev
+          </button>
+          <button type="button" onClick={nextPage}>
+            next
+          </button>
+        </div>
       </Column>
       <Column>
         <h4>Slow rendering</h4>
