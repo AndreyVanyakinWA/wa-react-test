@@ -7,12 +7,12 @@ import arrayMove from 'array-move'
 
 import postQuery from 'GraphQL/Queries/post.graphql'
 
-import { ROOT } from 'Router/routes'
+import { ROOT, POST } from 'Router/routes'
 
 import {
-  Back,
   Column,
   Container,
+  Link,
   PostAuthor,
   PostBody,
   PostComment,
@@ -40,6 +40,9 @@ function Post() {
     setComments(arrayMove(comments, newIndex, oldIndex))
   }
 
+  const handlePrev = () => history.push(POST(parseInt(postId, 10) - 1))
+  const handleNext = () => history.push(POST(parseInt(postId, 10) + 1))
+
   const { data, loading } = useQuery(postQuery, { variables: { id: postId } })
 
   const post = data?.post || {}
@@ -51,20 +54,23 @@ function Post() {
   return (
     <Container>
       <Column>
-        <Back onClick={handleClick}>Back</Back>
+        <Link onClick={handleClick}>Back</Link>
       </Column>
       {loading ? (
         'Loading...'
       ) : (
         <>
           <Column>
-            <h4>Need to add next/previous links</h4>
+            <h4>PostAuthor</h4>
             <PostContainer key={post.id}>
               <h3>{post.title}</h3>
               <PostAuthor>by {post.user.name}</PostAuthor>
               <PostBody mt={2}>{post.body}</PostBody>
             </PostContainer>
-            <div>Next/prev here</div>
+            <div>
+              {postId > 1 ? <Link onClick={handlePrev}>Prev</Link> : undefined}
+              <Link onClick={handleNext}>Next</Link>
+            </div>
           </Column>
 
           <Column>

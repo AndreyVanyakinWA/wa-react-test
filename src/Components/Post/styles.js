@@ -47,7 +47,7 @@ export const PostComment = styled.div`
   ${margin}
 `
 
-export const Back = styled.div`
+export const Link = styled.div`
   color: blue;
   cursor: pointer;
 
