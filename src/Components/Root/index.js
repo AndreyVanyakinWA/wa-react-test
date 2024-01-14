@@ -5,6 +5,8 @@ import { useQuery } from '@apollo/client'
 import faker from 'faker'
 import { nanoid } from 'nanoid'
 
+import Pagenation from 'Components/Pagenation'
+
 import postsQuery from 'GraphQL/Queries/posts.graphql'
 
 import { POST } from 'Router/routes'
@@ -42,19 +44,8 @@ function Root() {
     }, 2500)
   }
 
-  function nextPage() {
-    if (page * LIMIT < data?.posts.meta.totalCount) {
-      setPage(page + 1)
-    }
-  }
-
-  function prevPage() {
-    if (page > 1) {
-      setPage(page - 1)
-    }
-  }
-
   const posts = data?.posts.data || []
+  const total = data?.posts.meta.totalCount || 0
 
   return (
     <Container>
@@ -72,12 +63,12 @@ function Root() {
               </Post>
             ))}
         <div>
-          <button type="button" onClick={prevPage}>
-            prev
-          </button>
-          <button type="button" onClick={nextPage}>
-            next
-          </button>
+          <Pagenation
+            current={page}
+            limit={LIMIT}
+            total={total}
+            onClick={setPage}
+          />
         </div>
       </Column>
       <Column>

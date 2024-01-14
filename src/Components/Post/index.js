@@ -40,12 +40,15 @@ function Post() {
     setComments(arrayMove(comments, newIndex, oldIndex))
   }
 
-  const handlePrev = () => history.push(POST(parseInt(postId, 10) - 1))
-  const handleNext = () => history.push(POST(parseInt(postId, 10) + 1))
+  const currentPostId = parseInt(postId, 10)
+
+  const handlePrev = () => history.push(POST(currentPostId - 1))
+  const handleNext = () => history.push(POST(currentPostId + 1))
 
   const { data, loading } = useQuery(postQuery, { variables: { id: postId } })
 
   const post = data?.post || {}
+  const total = data?.posts.meta.totalCount
 
   useEffect(() => {
     setComments(post.comments?.data || [])
@@ -68,8 +71,12 @@ function Post() {
               <PostBody mt={2}>{post.body}</PostBody>
             </PostContainer>
             <div>
-              {postId > 1 ? <Link onClick={handlePrev}>Prev</Link> : undefined}
-              <Link onClick={handleNext}>Next</Link>
+              {currentPostId > 1 ? (
+                <Link onClick={handlePrev}>Prev</Link>
+              ) : undefined}
+              {currentPostId < total ? (
+                <Link onClick={handleNext}>Next</Link>
+              ) : undefined}
             </div>
           </Column>
 

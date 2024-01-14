@@ -1,7 +1,13 @@
 #import "GraphQL/Fragments/Post.graphql"
+#import "GraphQL/Fragments/PageMetadata.graphql"
 
 query Post($id: ID!) {
   post(id: $id) {
     ...Post
+  }
+  posts(options: {}) {
+    meta {
+      ...PageMetadata
+    }
   }
 }
