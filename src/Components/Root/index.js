@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@apollo/client'
 import faker from 'faker'
 import { nanoid } from 'nanoid'
+
+import Paginator from 'Components/Paginator'
 
 import postsQuery from 'GraphQL/Queries/posts.graphql'
 
@@ -14,6 +16,7 @@ import { Column, Container, Post, PostAuthor, PostBody } from './styles'
 import ExpensiveTree from '../ExpensiveTree'
 
 function Root() {
+  const itemsPerPage = 10
   const [count, setCount] = useState(0)
   const [fields, setFields] = useState([
     {
@@ -21,9 +24,17 @@ function Root() {
       id: nanoid(),
     },
   ])
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const [value, setValue] = useState('')
-  const { data, loading } = useQuery(postsQuery)
+  const inputRef = useRef()
+  const { data, loading } = useQuery(postsQuery, {
+    variables: {
+      page: currentPage,
+      perPage: itemsPerPage,
+    },
+  })
+
+  const totalCount = data?.posts.meta?.totalCount
 
   function handlePush() {
     setFields([{ name: faker.name.findName(), id: nanoid() }, ...fields])
@@ -35,8 +46,11 @@ function Root() {
     }, 2500)
   }
 
-  const posts = data?.posts.data || []
+  const handleOnPageNumberClick = pageNumber => {
+    setCurrentPage(pageNumber)
+  }
 
+  const posts = data?.posts.data || []
   return (
     <Container>
       <Column>
@@ -44,7 +58,7 @@ function Root() {
         {loading
           ? 'Loading...'
           : posts.map(post => (
-              <Post mx={4}>
+              <Post key={post.id} mx={4}>
                 <NavLink href={POST(post.id)} to={POST(post.id)}>
                   {post.title}
                 </NavLink>
@@ -52,6 +66,14 @@ function Root() {
                 <PostBody>{post.body}</PostBody>
               </Post>
             ))}
+        <div>
+          <Paginator
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            totalCount={totalCount}
+            onPageNumberClick={handleOnPageNumberClick}
+          />
+        </div>
         <div>Pagination here</div>
       </Column>
       <Column>
@@ -59,10 +81,7 @@ function Root() {
         <label>
           Enter something here:
           <br />
-          <input
-            value={value}
-            onChange={({ target }) => setValue(target.value)}
-          />
+          <input ref={inputRef} />
         </label>
         <p>So slow...</p>
         <ExpensiveTree />
@@ -84,7 +103,7 @@ function Root() {
         </button>
         <ol>
           {fields.map((field, index) => (
-            <li key={index}>
+            <li key={field.id}>
               {field.name}:<br />
               <input type="text" />
             </li>
