@@ -35,7 +35,7 @@ function Root() {
   })
 
   function handlePush() {
-    setFields([{ name: faker.name.findName(), id: nanoid() }, ...fields])
+    setFields([...fields, { name: faker.name.findName(), id: nanoid() }])
   }
 
   function handleAlertClick() {
@@ -54,7 +54,7 @@ function Root() {
         {loading
           ? 'Loading...'
           : posts.map(post => (
-              <Post mx={4}>
+              <Post key={post.id} mx={4}>
                 <NavLink href={POST(post.id)} to={POST(post.id)}>
                   {post.title}
                 </NavLink>

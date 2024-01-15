@@ -5,9 +5,9 @@ import { sortableContainer, sortableElement } from 'react-sortable-hoc'
 import { useQuery } from '@apollo/client'
 import arrayMove from 'array-move'
 
-import postQuery from 'GraphQL/Queries/post.graphql'
-
 import { ROOT, POST } from 'Router/routes'
+
+import postQuery from 'GraphQL/Queries/post.graphql'
 
 import {
   Column,
@@ -37,7 +37,7 @@ function Post() {
   const handleClick = () => history.push(ROOT)
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {
-    setComments(arrayMove(comments, newIndex, oldIndex))
+    setComments(arrayMove(comments, oldIndex, newIndex))
   }
 
   const currentPostId = parseInt(postId, 10)
@@ -52,7 +52,7 @@ function Post() {
 
   useEffect(() => {
     setComments(post.comments?.data || [])
-  }, [post])
+  }, [data?.post])
 
   return (
     <Container>
