@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@apollo/client'
@@ -26,7 +26,7 @@ function Root() {
   ])
   const [currentPage, setCurrentPage] = useState(1)
 
-  const inputRef = useRef()
+  const [value, setValue] = useState('')
   const { data, loading } = useQuery(postsQuery, {
     variables: {
       page: currentPage,
@@ -81,10 +81,13 @@ function Root() {
         <label>
           Enter something here:
           <br />
-          <input ref={inputRef} />
+          <input
+            value={value}
+            onChange={({ target }) => setValue(target.value)}
+          />
         </label>
         <p>So slow...</p>
-        <ExpensiveTree />
+        <ExpensiveTree input={value} />
 
         <h4>Closures?</h4>
         <p>You clicked {count} times</p>
