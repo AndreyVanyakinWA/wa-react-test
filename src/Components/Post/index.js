@@ -34,19 +34,40 @@ function Post() {
     params: { postId },
   } = useRouteMatch()
 
+  const [singlePostId, setSinglePostId] = useState(postId)
+  const [savedPostIds, setSavedPostIds] = useState([])
   const handleClick = () => history.push(ROOT)
 
   const handleSortEnd = ({ oldIndex, newIndex }) => {
     setComments(arrayMove(comments, newIndex, oldIndex))
   }
 
-  const { data, loading } = useQuery(postQuery, { variables: { id: postId } })
+  const { data, loading } = useQuery(postQuery, {
+    variables: { id: singlePostId },
+  })
 
   const post = data?.post || {}
 
   useEffect(() => {
-    setComments(post.comments?.data || [])
+    const saved = localStorage.getItem('postIds')
+    setSavedPostIds(JSON.parse(saved))
+  }, [])
+
+  useEffect(() => {
+    if (post && post.comment?.data) {
+      setComments(post.comments?.data)
+    }
   }, [post])
+
+  const handleNextClick = () => {
+    const index = savedPostIds.indexOf(singlePostId)
+    setSinglePostId(savedPostIds[index + 1])
+  }
+
+  const handlePreviousClick = () => {
+    const index = savedPostIds.indexOf(singlePostId)
+    setSinglePostId(savedPostIds[index - 1])
+  }
 
   return (
     <Container>
@@ -65,6 +86,20 @@ function Post() {
               <PostBody mt={2}>{post.body}</PostBody>
             </PostContainer>
             <div>Next/prev here</div>
+            <button
+              disabled={singlePostId === savedPostIds[0]}
+              type="button"
+              onClick={handlePreviousClick}
+            >
+              Previous
+            </button>
+            <button
+              disabled={singlePostId === savedPostIds[savedPostIds.length - 1]}
+              type="button"
+              onClick={handleNextClick}
+            >
+              Next
+            </button>
           </Column>
 
           <Column>

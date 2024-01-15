@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@apollo/client'
@@ -33,8 +33,16 @@ function Root() {
       perPage: itemsPerPage,
     },
   })
+  const posts = data?.posts.data || []
 
-  const totalCount = data?.posts.meta?.totalCount
+  useEffect(() => {
+    if (posts.length > 0) {
+      const postIds = posts.map(post => post.id)
+      localStorage.setItem('postIds', JSON.stringify(postIds))
+    }
+  }, [data])
+
+  const totalCount = data?.posts.meta.totalCount
 
   function handlePush() {
     setFields([{ name: faker.name.findName(), id: nanoid() }, ...fields])
@@ -50,7 +58,6 @@ function Root() {
     setCurrentPage(pageNumber)
   }
 
-  const posts = data?.posts.data || []
   return (
     <Container>
       <Column>
