@@ -8,12 +8,17 @@ export const Container = styled.div`
   min-height: 100vh;
   overflow: hidden;
   justify-content: space-between;
+  flex-wrap: wrap;
 `
 
 export const Column = styled.div`
   width: 30%;
   min-height: 100vh;
   padding: 16px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `
 
 export const Post = styled.div.attrs({
