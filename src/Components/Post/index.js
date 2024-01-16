@@ -5,9 +5,9 @@ import { sortableContainer, sortableElement } from 'react-sortable-hoc'
 import { useQuery } from '@apollo/client'
 import arrayMove from 'array-move'
 
-import { ROOT, POST } from 'Router/routes'
-
 import postQuery from 'GraphQL/Queries/post.graphql'
+
+import { POST, ROOT } from 'Router/routes'
 
 import {
   Column,
