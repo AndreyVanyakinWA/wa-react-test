@@ -54,7 +54,7 @@ function Post() {
   }, [])
 
   useEffect(() => {
-    if (post && post.comment?.data) {
+    if (post && post.comments?.data) {
       setComments(post.comments?.data)
     }
   }, [post])
