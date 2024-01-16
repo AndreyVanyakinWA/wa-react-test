@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { useQuery } from '@apollo/client'
@@ -17,6 +17,10 @@ import ExpensiveTree from '../ExpensiveTree'
 
 function Root() {
   const [count, setCount] = useState(0)
+  const latestCount = useRef(count)
+  useEffect(() => {
+    latestCount.current = count
+  }, [count])
   const [fields, setFields] = useState([
     {
       name: faker.name.findName(),
@@ -40,7 +44,7 @@ function Root() {
 
   function handleAlertClick() {
     setTimeout(() => {
-      alert(`You clicked ${count} times`)
+      alert(`You clicked ${latestCount.current} times`)
     }, 2500)
   }
 
