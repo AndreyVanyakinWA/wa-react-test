@@ -28,9 +28,13 @@ function Ticker() {
       localStorage.setItem('test-start', testStart.current.toISO())
     }
 
-    setInterval(() => {
+    const timer = setInterval(() => {
       setTime(DateTime.local().diff(testStart.current).toFormat('hh:mm:ss'))
     }, 1000)
+
+    return () => {
+      clearInterval(timer)
+    }
   }, [])
 
   return <Container>Viewing this test: {time}</Container>
